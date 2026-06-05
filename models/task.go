@@ -10,10 +10,12 @@ type Task struct {
 	ID        int       `json:"id"`
 	Title     string    `json:"title"`
 	Description string `json:"description"`
+	Priority    string   `json:"priority"`
 	Completed bool      `json:"completed"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
 
 // TaskStore untuk mengelola semua tugas (menggunakan penyimpanan memori)
 type TaskStore struct {
@@ -31,7 +33,7 @@ func NewTaskStore() *TaskStore {
 }
 
 // CreateTask menambahkan tugas baru ke store
-func (ts *TaskStore) CreateTask(title, description string) *Task {
+func (ts *TaskStore) CreateTask(title, description, priority string) *Task {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 
@@ -39,6 +41,7 @@ func (ts *TaskStore) CreateTask(title, description string) *Task {
 		ID:          ts.nextID,
 		Title:       title,
 		Description: description,
+		Priority:    priority,
 		Completed:   false,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -72,7 +75,7 @@ func (ts *TaskStore) GetTaskByID(id int) (*Task, bool) {
 }
 
 // UpdateTask memperbarui tugas yang ada di store
-func (ts *TaskStore) UpdateTask(id int, title, description string, completed bool) (*Task, bool) {
+func (ts *TaskStore) UpdateTask(id int, title, description, priority string, completed bool) (*Task, bool) {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 
@@ -83,6 +86,7 @@ func (ts *TaskStore) UpdateTask(id int, title, description string, completed boo
 
 	task.Title = title
 	task.Description = description
+	task.Priority = priority
 	task.Completed = completed
 	task.UpdatedAt = time.Now()
 

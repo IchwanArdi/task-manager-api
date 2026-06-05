@@ -66,7 +66,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Belajar Golang\",\n  \"description\": \"Memahami REST API dengan Golang\",\n  \"completed\": false\n}"
+              "raw": "{\n  \"title\": \"Belajar Golang\",\n  \"description\": \"Memahami REST API dengan Golang\", \"priority\": \"Rendah\", \"completed\": false\n}"
             },
             "url": {
               "raw": "http://localhost:8080/tasks",
@@ -91,7 +91,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Belajar Golang Advanced\",\n  \"description\": \"Sudah lebih paham tentang REST API\",\n  \"completed\": true\n}"
+              "raw": "{\n  \"title\": \"Belajar Golang Advanced\",\n  \"description\": \"Sudah lebih paham tentang REST API\", \"priority\": \"Tinggi\", \"completed\": true\n}"
             },
             "url": {
               "raw": "http://localhost:8080/tasks/1",

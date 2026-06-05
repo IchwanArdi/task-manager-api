@@ -14,6 +14,7 @@ import (
 type TaskRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Priority    string `json:"priority"`
 	Completed   bool   `json:"completed"`
 }
 
@@ -81,15 +82,34 @@ func CreateTask(w http.ResponseWriter, r *http.Request, store *models.TaskStore)
 		return
 	}
 
-	// Validate input
+	// Validate input - title tidak boleh kosong
 	if strings.TrimSpace(req.Title) == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(ErrorResponse{Error: "Title diperlukan"})
 		return
 	}
 
+	// Validasi deskripsi - deskripsi tidak boleh kosong
+	if strings.TrimSpace(req.Description) == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Description diperlukan"})
+		return
+	}
+
+	// Validasi priority - harus salah satu dari "Rendah", "Sedang", "Tinggi"
+	validPriorities := map[string]bool{
+		"Rendah": true,
+		"Sedang": true,
+		"Tinggi": true,
+	}
+	if _, isValid := validPriorities[req.Priority]; !isValid {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(ErrorResponse{Error: "Priority tidak valid. Harus salah satu dari: Rendah, Sedang, Tinggi"})
+		return
+	}
+
 	// Membuat task
-	task := store.CreateTask(req.Title, req.Description)
+	task := store.CreateTask(req.Title, req.Description, req.Priority)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(task)
@@ -132,7 +152,7 @@ func UpdateTask(w http.ResponseWriter, r *http.Request, store *models.TaskStore)
 	}
 
 	// Update task
-	task, exists := store.UpdateTask(id, req.Title, req.Description, req.Completed)
+	task, exists := store.UpdateTask(id, req.Title, req.Description, req.Priority, req.Completed)
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(ErrorResponse{Error: "Task tidak ditemukan"})
