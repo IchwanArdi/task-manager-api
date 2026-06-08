@@ -75,9 +75,8 @@ func main() {
 		}
 	})
 
-
 	// Start server
-	port := ":8081"
+	port := ":8080"
 	log.Printf("Server running on http://localhost%s\n", port)
 	log.Printf("Endpoints available:\n")
 	log.Printf("  GET    /health           - Health check\n")
