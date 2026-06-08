@@ -5,13 +5,22 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"taskmanager/connection"
 	"taskmanager/handlers"
 	"taskmanager/models"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	// Inisialisasi task store
+	// Load dari file .env
+	godotenv.Load()
+	// Inisialisasi TaskStore
 	taskStore := models.NewTaskStore()
+
+	// Inisialisasi koneksi database
+	connection.InitDB()
 
 	// Create HTTP mux (router)
 	mux := http.NewServeMux()
@@ -44,7 +53,7 @@ func main() {
 		}
 	})
 
-	// Handle /tasks/{id} - ini untuk GET, PUT, DELETE
+	// Handle /tasks/{id} - untuk GET, PUT, DELETE
 	mux.HandleFunc("/tasks/", func(w http.ResponseWriter, r *http.Request) {
 		// Extract ID dari path
 		pathParts := strings.Split(r.URL.Path, "/")
@@ -66,7 +75,7 @@ func main() {
 
 
 	// Start server
-	port := ":8080"
+	port := ":8081"
 	log.Printf("Server running on http://localhost%s\n", port)
 	log.Printf("Endpoints available:\n")
 	log.Printf("  GET    /health           - Health check\n")
