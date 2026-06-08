@@ -16,11 +16,13 @@ import (
 func main() {
 	// Load dari file .env
 	godotenv.Load()
-	// Inisialisasi TaskStore
-	taskStore := models.NewTaskStore()
 
 	// Inisialisasi koneksi database
-	connection.InitDB()
+	db := connection.InitDB()
+	defer db.Close()
+
+	// Inisialisasi TaskStore dengan database connection
+	taskStore := models.NewTaskStore(db)
 
 	// Create HTTP mux (router)
 	mux := http.NewServeMux()
