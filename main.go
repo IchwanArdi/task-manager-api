@@ -32,7 +32,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-	// Load dari file .env
+	// Ambil data dari .env
 	godotenv.Load()
 
 	// Inisialisasi koneksi database
