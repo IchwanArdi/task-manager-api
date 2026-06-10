@@ -13,6 +13,24 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+
+		// Handle preflight requests
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	// Load dari file .env
 	godotenv.Load()
@@ -75,6 +93,9 @@ func main() {
 		}
 	})
 
+	// Apply CORS middleware
+	handler := corsMiddleware(mux)
+
 	// Start server
 	port := ":8080"
 	log.Printf("Server running on http://localhost%s\n", port)
@@ -86,7 +107,7 @@ func main() {
 	log.Printf("  PUT    /tasks/{id}       - Update task\n")
 	log.Printf("  DELETE /tasks/{id}       - Delete task\n")
 
-	if err := http.ListenAndServe(port, mux); err != nil {
+	if err := http.ListenAndServe(port, handler); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }

@@ -89,13 +89,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request, store *models.TaskStore)
 		return
 	}
 
-	// Validasi deskripsi - deskripsi tidak boleh kosong
-	if strings.TrimSpace(req.Description) == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(ErrorResponse{Error: "Description diperlukan"})
-		return
-	}
-
 	// Validasi priority - harus salah satu dari "Rendah", "Sedang", "Tinggi"
 	validPriorities := map[string]bool{
 		"Rendah": true,
